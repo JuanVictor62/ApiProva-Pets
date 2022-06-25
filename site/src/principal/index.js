@@ -1,10 +1,10 @@
 import './index.scss'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { cadastro, consultarPets } from '../api/pets';
 
 export default function Principal(){
     const [nome, SetNome]= useState('');
-    const [filtro, SetFiltro]= useState('');
+    const [pets, setPets] = useState([]);
 
 
 
@@ -19,9 +19,13 @@ export default function Principal(){
         }
     }
 
-    async function filtrar(){
-        const resp = consultarPets(filtro)
-        return resp.data;
+    useEffect(()  => {
+        CarregarPets();
+    }, [])
+
+    async function CarregarPets(){
+        const resp = await consultarPets();
+        setPets(resp); 
     }
 
     return(
@@ -35,11 +39,22 @@ export default function Principal(){
                 <button onClick={salvarClick} >Registrar</button>
             </div>
 
-            <div>
+            <div className='asd'>
                 <h1>Consulta dos Pets</h1>
-                {pet.map => 
-                <h1>{item.nome}</h1>
-                }
+                <tr>
+                            <td>ID</td>
+                            <td>Nome</td>
+                        </tr>
+                {pets.map(item => 
+                <tbody>
+                    <table>
+                        <tr>
+                            <td>{item.id}</td>
+                            <td>{item.nome}</td>
+                        </tr>
+                    </table>
+                </tbody>
+                )}
             </div>
         </main>
     )
